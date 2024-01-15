@@ -10,7 +10,7 @@
     function authorizeUser($email, $pass) {
         require_once('db_repository.php');
         $user = getUserByEmail($email);
-        if ($user == NULL || $user['password'] != $pass) {
+        if ($user == NULL || !password_verify($pass, $user['password'])) {
             return NULL;
         }
         return $user['name'];
