@@ -12,11 +12,11 @@
         if ($valsAndErrs['valid']) {
             displayThanks($valsAndErrs);
         } else {
-            displayForm($valsAndErrs);
+            displayContactForm($valsAndErrs);
         }
     }
     
-    function displayForm($valsAndErrs) {
+    function displayContactForm($valsAndErrs) {
         showFormStart('contact');
         
         //selection for title

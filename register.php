@@ -5,10 +5,10 @@
     }
 
     function showRegisterContent($valsAndErrs) {
-        displayForm($valsAndErrs);
+        displayRegistrationForm($valsAndErrs);
     }
 
-    function displayForm($valsAndErrs) {
+    function displayRegistrationForm($valsAndErrs) {
         
         echo '<h4>Vul uw gegevens in om te registreren</h4>' . PHP_EOL;
         
