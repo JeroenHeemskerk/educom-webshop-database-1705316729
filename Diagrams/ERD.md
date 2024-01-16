@@ -14,7 +14,7 @@ erDiagram
         int    user_id           FK
         int    total_price
     }
-    order_items||o--|| products : Contains
+    order_items|o--|| products : Contains
     order_items {
         int    id                PK
         int    order_id          FK
