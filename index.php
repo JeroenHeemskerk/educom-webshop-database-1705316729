@@ -45,6 +45,7 @@
                 $valsAndErrs = validateRegistration();
                 if ($valsAndErrs['valid']) {
                     addUser($valsAndErrs);
+                    $valsAndErrs['pass'] = ''; //remove pass, else it will be pre-filled
                     $page = 'login';
                 }
                 break;
