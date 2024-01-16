@@ -25,6 +25,8 @@ erDiagram
     products {
         int    id                PK
         string product_name
+        string description
         int    price
+        string img_filename
     }
 ```
