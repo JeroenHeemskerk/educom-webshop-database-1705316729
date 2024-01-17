@@ -83,3 +83,15 @@ textarea {
 .error {
 	color: red;
 }
+
+th {
+	padding-right: 15px;
+	text-align: left;
+}
+
+td {
+	padding-right: 15px;
+}
+.detail_img {
+	width: 50%;
+}
