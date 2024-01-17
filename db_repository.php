@@ -38,6 +38,43 @@ function storeUser($data) {
     }
 }
 
+function getProductByID($id) {
+    $conn = open_connection();
+    
+    $sql = "SELECT * FROM products WHERE id = $id";
+    
+    $result = $conn->query($sql);
+    
+    $conn->close();
+
+    if ($result->num_rows > 0) {
+        $row = $result -> fetch_assoc();
+        return $row;
+    } else {
+        return NULL;
+    }
+}
+
+function getAllProducts() {
+    $conn = open_connection();
+
+    $sql = 'SELECT * FROM products';
+
+    $result = $conn->query($sql);
+    
+    $conn->close();
+
+    if ($result->num_rows > 0) {
+        $products = array();
+        while ($row = $result -> fetch_assoc()) {
+            array_push($products, $row);
+        }
+        return $products;
+    } else {
+        return NULL;
+    }
+}
+
 function open_connection() {
     $servername = "localhost";
     $username = "thomas_webshop_user";

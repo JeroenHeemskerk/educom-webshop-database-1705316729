@@ -20,4 +20,13 @@
         require_once('db_repository.php');
         storeUser($data);
     }
+    function getProduct($id) {
+        require_once('db_repository.php');
+        return getProductByID($id);
+    }
+
+    function getProductList() {
+        require_once('db_repository.php');
+        return getAllProducts();
+    }
 ?>

@@ -49,6 +49,9 @@
                     $page = 'login';
                 }
                 break;
+            case 'detail':
+                $valsAndErrs['productid'] = getUrlVar('productid');
+                break;
         }
         
         $valsAndErrs['page'] = $page;
@@ -89,7 +92,7 @@
         echo '    </head>' . PHP_EOL;
     } 
 
-    function showBodySection($valsAndErrs) { 
+    function showBodySection($valsAndErrs) {
         echo '    <body>' . PHP_EOL;
         showHeader($valsAndErrs['page']);
         showMenu();
@@ -126,6 +129,14 @@
                 require_once('login.php');
                 $pageName = loginHeader();
                 break;
+            case 'webshop':
+                require_once('webshop.php');
+                $pageName = webshopHeader();
+                break;
+            case 'detail':
+                require_once('detail.php');
+                $pageName = detailHeader();
+                break;
             default:
                 $pageName = '404: Page Not Found';
         }
@@ -137,6 +148,7 @@
         showMenuItem('home', 'HOME');
         showMenuItem('about', 'ABOUT');
         showMenuItem('contact', 'CONTACT');
+        showMenuItem('webshop', 'WEBSHOP');
         require_once('session_manager.php');
         if (isUserLoggedIn()) {
             showMenuItem('logout', 'LOGOUT ' . getLoggedInUsername());
@@ -174,6 +186,13 @@
                 require_once('login.php');
                 showLoginContent($valsAndErrs);
                 break;
+            case 'webshop':
+                require_once('webshop.php');
+                showWebshopContent();
+                break;
+            case 'detail':
+                require_once('detail.php');
+                showDetailContent($valsAndErrs);
             default:
                 //require('404.php');
         }     
