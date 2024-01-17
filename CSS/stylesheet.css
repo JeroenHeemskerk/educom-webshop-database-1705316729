@@ -1,8 +1,12 @@
 /* Cascade Style Sheet for this website */
+html {
+	height: 100%;
+}
 body {
 	margin-left: auto;
 	margin-right: auto;
 	width: 800px;
+	min-height: 100%;
 	color: #444444;
 }
 
@@ -39,11 +43,17 @@ ul.menu li a {
 }
 
 footer > p {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	margin-bottom: 0;
+	width: 100%;
 	background-color: black;
 	color: white;
 	font-size: 10px;
 	text-align: right;
 	padding: 4px 8px;
+	box-sizing: border-box;
 }
 
 p {
