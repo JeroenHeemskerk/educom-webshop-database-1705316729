@@ -38,18 +38,25 @@ function storeUser($data) {
     }
 }
 
-function getProductByID($id) {
+function getProductsByID($ids) {
     $conn = open_connection();
     
-    $sql = "SELECT * FROM products WHERE id = $id";
+    $sql = "SELECT * FROM products WHERE id IN (";
+    for($i=0; $i<count($ids)-1;$i++) {
+        $sql = $sql.$ids[$i].',';
+    }
+    $sql = $sql.$ids[count($ids)-1].')';
     
     $result = $conn->query($sql);
     
     $conn->close();
 
     if ($result->num_rows > 0) {
-        $row = $result -> fetch_assoc();
-        return $row;
+        $products = array();
+        while ($row = $result -> fetch_assoc()) {
+            array_push($products, $row);
+        }
+        return $products;
     } else {
         return NULL;
     }
