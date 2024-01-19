@@ -42,10 +42,10 @@ function getProductsByID($ids) {
     $conn = open_connection();
     
     $sql = "SELECT * FROM products WHERE id IN (";
-    for($i=0; $i<count($ids)-1;$i++) {
-        $sql = $sql.$ids[$i].',';
+    for($i=0; $i<count($ids);$i++) {
+        $ending = $i==count($ids)-1 ? ')' : ',';
+        $sql = $sql.$ids[$i].$ending;
     }
-    $sql = $sql.$ids[count($ids)-1].')';
     
     $result = $conn->query($sql);
     
@@ -60,6 +60,41 @@ function getProductsByID($ids) {
     } else {
         return NULL;
     }
+}
+
+function createOrder($userId, $cartItems) {
+    $conn = open_connection();
+    //query for adding order
+    $sql = "INSERT INTO orders (user_id) VALUES ($userId)";
+
+    $result = $conn->query($sql);
+    $orderId = mysqli_insert_id($conn);
+
+    $productIds = array_keys($cartItems);
+    if (empty($productIds)) {
+        return NULL;
+    }
+    $products = getProductsByID($productIds); //currently opens another connection
+
+    if ($products == NULL) {
+        return NULL;
+    }
+
+    //SQL query for adding order items
+    $sql = "INSERT INTO order_items (order_id, product_id, quantity, sale_price) VALUES ";
+    //add each item to the query
+    for($i=0; $i<count($products);$i++) {
+        $quantity = $cartItems[$products[$i]['id']];
+        $sale_price = $quantity * $products[$i]['price'];
+        $ending = $i==count($cartItems)-1 ? ';' : ',';
+        $sql = $sql. "($orderId, ".$products[$i]['id'].", ".$quantity.", ".$sale_price.")".$ending;
+    }
+
+    $result = $conn->query($sql);
+
+    $conn->close();
+
+    return $result;
 }
 
 function getAllProducts() {

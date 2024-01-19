@@ -13,7 +13,7 @@
         if ($user == NULL || !password_verify($pass, $user['password'])) {
             return NULL;
         }
-        return $user['name'];
+        return $user;
     }
 
     function addUser($data) {
@@ -28,5 +28,10 @@
     function getProductList() {
         require_once('db_repository.php');
         return getAllProducts();
+    }
+
+    function placeOrder($userId, $cartItems) {
+        require_once('db_repository.php');
+        createOrder($userId, $cartItems);
     }
 ?>
