@@ -32,7 +32,7 @@
                 require_once('login.php');
                 $valsAndErrs = validateLogin();
                 if ($valsAndErrs['valid']) {
-                    loginUser($valsAndErrs['name']);
+                    loginUser($valsAndErrs['name'], $valsAndErrs['userId']);
                     $page = 'home';
                 }
                 break;
@@ -50,7 +50,13 @@
                 }
                 break;
             case 'detail':
-                $valsAndErrs['productid'] = getUrlVar('productid');
+                $valsAndErrs['productId'] = getUrlVar('productId');
+                break;
+            case 'webshop':
+                handleCartActions();
+                break;
+            case 'cart':
+                handleCartActions();
                 break;
         }
         
@@ -137,6 +143,10 @@
                 require_once('detail.php');
                 $pageName = detailHeader();
                 break;
+            case 'cart':
+                require_once('cart.php');
+                $pageName = cartHeader();
+                break;
             default:
                 $pageName = '404: Page Not Found';
         }
@@ -151,6 +161,7 @@
         showMenuItem('webshop', 'WEBSHOP');
         require_once('session_manager.php');
         if (isUserLoggedIn()) {
+            showMenuItem('cart', 'SHOPPING CART');
             showMenuItem('logout', 'LOGOUT ' . getLoggedInUsername());
         } else {
             showMenuItem('register', 'REGISTER');
@@ -193,6 +204,11 @@
             case 'detail':
                 require_once('detail.php');
                 showDetailContent($valsAndErrs);
+                break;
+            case 'cart':
+                require_once('cart.php');
+                showCartContent();
+                break;
             default:
                 //require('404.php');
         }     
@@ -236,10 +252,39 @@
         }
         return $emailErr;
     }
+
+    //function to handle actions which add or remove items from cart
+    function handleCartActions() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $action = getPostVar('action');
+            switch ($action) {
+                case 'addToCart':
+                    $quantity = (int)getPostVar('quantity');
+                    $productId = getPostVar('productId');
+                    addItemsToCart($productId, $quantity);
+                    break;
+                case 'removeFromCart':
+                    $quantity = (int)getPostVar('quantity');
+                    $productId = getPostVar('productId');
+                    removeItemsFromCart($productId, $quantity);
+                    break;
+                case 'placeOrder':
+                    $userId = getLoggedInUserId();
+                    $cartItems = getCartItems();
+                    placeOrder($userId, $cartItems);
+                    emptyCart();
+                    break;
+            }
+        }
+    }
     
     function showFormStart($value) {
-        echo '    <form method="post" action="index.php" accept-charset=utf-8>
-        <input type="hidden" name="page" value="'.$value.'">'.PHP_EOL;
+        echo '    <form method="post" action="index.php" accept-charset=utf-8>';
+        showHiddenField('page', $value);
+    }
+
+    function showHiddenField($name, $value) {
+        echo '    <input type="hidden" name="'.$name.'" value='.$value.'>'.PHP_EOL;
     }
     
     //function to display a text input as well as its label and error message
@@ -313,7 +358,7 @@
     }
     
     function showFormEnd($value) {
-        echo '<input type="submit" value="'.$value.'">
+        echo '<input class="form_submit" type="submit" value="'.$value.'">
     </form>' . PHP_EOL;
     }
 ?>
