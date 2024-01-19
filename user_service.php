@@ -18,7 +18,8 @@
 
     function addUser($data) {
         require_once('db_repository.php');
-        storeUser($data);
+        $encrypted_password = password_hash($data['pass'], PASSWORD_BCRYPT, ['cost'=>14]);
+        storeUser($data['email'], $data['name'], $encrypted_password);
     }
     function getProducts($ids) {
         require_once('db_repository.php');

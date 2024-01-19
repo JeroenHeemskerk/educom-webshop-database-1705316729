@@ -18,16 +18,11 @@ function getUserByEmail($email) {
     }
 }
 
-function storeUser($data) {
+function storeUser($email, $name, $password) {
     $conn = open_connection();
-    
-    $email = $data['email'];
-    $name = $data['name'];
-    $password = $data['pass'];
-    $encrypted_password = password_hash($password, PASSWORD_BCRYPT, ['cost'=>14]);
-    
+        
     $sql = "INSERT INTO users (email, name, password)
-    VALUES ('$email', '$name', '$encrypted_password')";
+    VALUES ('$email', '$name', '$password')";
 
     if ($conn->query($sql) === TRUE) {
         $conn->close();
