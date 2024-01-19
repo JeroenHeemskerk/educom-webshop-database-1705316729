@@ -27,7 +27,7 @@
 
 
     function validateLogin() {
-        $email = $pass = $name = '';
+        $email = $pass = $name = $userId = '';
         $emailErr = $passErr = '';
         $valid = false;
 
@@ -40,7 +40,9 @@
             }
             
             $pass = testInput(getPostVar("pass"));
-            $name = authorizeUser($email, $pass);
+            $user = authorizeUser($email, $pass);
+            $name = $user['name'];
+            $userId = $user['id'];
             if (empty($pass)) {
                 $passErr = "Vul een wachtwoord in";
             } elseif (empty($emailErr) && $name == NULL) {
@@ -50,7 +52,7 @@
             //update valid boolean after all error checking
             $valid = empty($nameErr) && empty($emailErr) && empty($passErr) && empty($passConfirmErr);
         }
-        $valsAndErrs = array('valid'=>$valid, 'email'=>$email, 'pass'=>$pass, 'name'=>$name,
+        $valsAndErrs = array('valid'=>$valid, 'email'=>$email, 'pass'=>$pass, 'name'=>$name, 'userId'=>$userId,
                              'emailErr'=>$emailErr, 'passErr'=>$passErr);
         return $valsAndErrs;
     }
