@@ -1,10 +1,7 @@
 <?php
     function doesEmailExist($email) {
         require_once('db_repository.php');
-        if (getUserByEmail($email)== NULL) {
-            return false;
-        }
-        return true;
+        return !empty(getUserByEmail($email));
     }
 
     function authorizeUser($email, $pass) {

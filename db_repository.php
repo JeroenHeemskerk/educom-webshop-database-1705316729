@@ -30,13 +30,9 @@ function storeUser($email, $name, $password) {
     $sql = "INSERT INTO users (email, name, password)
     VALUES ('$email', '$name', '$password')";
 
-    if ($conn->query($sql) === TRUE) {
-        $conn->close();
-        return true;
-    } else {
-        $conn->close();
-        return false;
-    }
+    $result = $conn->query($sql);
+    $conn->close();
+    return $result;
 }
 
 function getProductsByID($ids) {
