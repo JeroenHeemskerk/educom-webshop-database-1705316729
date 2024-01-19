@@ -15,17 +15,17 @@ erDiagram
     }
     order_items }o--|| products : Contains
     order_items {
-        int    id                PK
-        int    order_id          FK
-        int    product_id        FK
-        int    quantity
-        int    sale_price
+        int     id                PK
+        int     order_id          FK
+        int     product_id        FK
+        int     quantity
+        decimal sale_price
     }
     products {
-        int    id                PK
-        string product_name
-        string description
-        int    price
-        string img_filename
+        int     id                PK
+        string  product_name
+        string  description
+        decimal price
+        string  img_filename
     }
 ```
