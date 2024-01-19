@@ -12,7 +12,6 @@ erDiagram
     orders {
         int    id                PK
         int    user_id           FK
-        int    total_price
     }
     order_items }o--|| products : Contains
     order_items {
@@ -20,7 +19,7 @@ erDiagram
         int    order_id          FK
         int    product_id        FK
         int    quantity
-        int    price
+        int    sale_price
     }
     products {
         int    id                PK
