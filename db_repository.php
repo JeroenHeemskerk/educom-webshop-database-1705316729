@@ -3,6 +3,8 @@
 
 function getUserByEmail($email) {
     $conn = open_connection();
+
+    $email = mysqli_real_escape_string($conn, $email);
     
     $sql = "SELECT * FROM users WHERE email = '$email'";
     
@@ -20,6 +22,10 @@ function getUserByEmail($email) {
 
 function storeUser($email, $name, $password) {
     $conn = open_connection();
+
+    $email = mysqli_real_escape_string($conn, $email);
+    $name = mysqli_real_escape_string($conn, $name);
+    $password = mysqli_real_escape_string($conn, $password);
         
     $sql = "INSERT INTO users (email, name, password)
     VALUES ('$email', '$name', '$password')";
