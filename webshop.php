@@ -25,7 +25,7 @@
             echo "    <td><a class='webshop_link' href='index.php?page=detail&productId=".$product['id']."'>".$product['name']."</a></td>" . PHP_EOL;
             if (isUserLoggedIn()) {
                 echo '    <td>';
-                showWebshopForm($product['id']);
+                showAddToCartForm('webshop', $product['id']);
                 echo '    </td>' . PHP_EOL;
             }
             echo "    <td>$".$product['price']."</td>" . PHP_EOL;
@@ -33,15 +33,5 @@
             echo '</tr>' . PHP_EOL;
         }
         echo '</table>'. PHP_EOL;
-    }
-
-    function showWebshopForm($productId) {
-        showFormStart('webshop');
-
-        showHiddenField('productId', $productId);
-        showHiddenField('action', 'addToCart');
-        echo '    <input type="number" class="webshop_input" name="quantity" min="0" max="9999">';
-
-        showFormEnd('Add To Cart');
     }
 ?>

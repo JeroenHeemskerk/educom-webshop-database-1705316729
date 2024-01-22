@@ -1,9 +1,11 @@
 <?php
+
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
     require_once('session_manager.php');
     require_once('user_service.php');
+
     $page = getRequestedPage();
     $valsAndErrs = processRequest($page);
     showResponsePage($valsAndErrs);
@@ -276,6 +278,16 @@
                     break;
             }
         }
+    }
+
+    function showAddToCartForm($page, $productId) {
+        showFormStart($page);
+
+        showHiddenField('productId', $productId);
+        showHiddenField('action', 'addToCart');
+        echo '    <input type="number" class="webshop_input" name="quantity" value="0" min="0" max="9999">';
+
+        showFormEnd('Add To Cart');
     }
     
     function showFormStart($value) {
