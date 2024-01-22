@@ -42,6 +42,11 @@
         return getAllProducts();
     }
 
+    function getTopFiveProducts() {
+        require_once('db_repository.php');
+        return getTopFive();
+    }
+
     function placeOrder($userId, $cartItems) {
         require_once('db_repository.php');
         createOrder($userId, $cartItems);

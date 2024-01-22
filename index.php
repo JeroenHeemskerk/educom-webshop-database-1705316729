@@ -52,6 +52,7 @@
                 }
                 break;
             case 'detail':
+                handleCartActions();
                 $valsAndErrs['product'] = getProducts([getUrlVar('productId')])[0];
                 break;
             case 'webshop':
@@ -61,6 +62,10 @@
             case 'cart':
                 handleCartActions();
                 $valsAndErrs['cartItems'] = getCartItems();
+                break;
+            case 'topfive':
+                handleCartActions();
+                $valsAndErrs['products'] = getTopFiveProducts();
                 break;
         }
         
@@ -151,6 +156,10 @@
                 require_once('cart.php');
                 $pageName = cartHeader();
                 break;
+            case 'topfive':
+                require_once('top_five.php');
+                $pageName = topFiveHeader();
+                break;
             default:
                 $pageName = '404: Page Not Found';
         }
@@ -163,6 +172,7 @@
         showMenuItem('about', 'ABOUT');
         showMenuItem('contact', 'CONTACT');
         showMenuItem('webshop', 'WEBSHOP');
+        showMenuItem('topfive', 'TOP 5');
         require_once('session_manager.php');
         if (isUserLoggedIn()) {
             showMenuItem('cart', 'SHOPPING CART');
@@ -212,6 +222,10 @@
             case 'cart':
                 require_once('cart.php');
                 showCartContent($valsAndErrs);
+                break;
+            case 'topfive':
+                require_once('top_five.php');
+                showTopFiveContent($valsAndErrs);
                 break;
             default:
                 //require('404.php');

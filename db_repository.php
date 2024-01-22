@@ -114,6 +114,40 @@ function getAllProducts() {
     }
 }
 
+function getTopFive() {
+    $conn = open_connection();
+
+    $sql = 
+    'SELECT id, name, product_description, price, img_filename, quantity
+    FROM products x
+    LEFT JOIN (SELECT product_id, SUM(quantity) quantity
+        FROM `orders` o
+        JOIN (
+            SELECT id, order_id, product_id, quantity
+            FROM order_items) oi
+        ON o.id = oi.order_id
+        WHERE date >= ADDDATE(NOW(), INTERVAL -7 DAY)
+        GROUP BY product_id) y
+    ON x.id = y.product_id
+    ORDER BY quantity DESC
+    LIMIT 5';
+
+    $result = $conn->query($sql);
+    
+    $conn->close();
+
+    if ($result->num_rows > 0) {
+        $products = array();
+        while ($row = $result -> fetch_assoc()) {
+            array_push($products, $row);
+        }
+        return $products;
+    } else {
+        return NULL;
+    }
+}
+
+
 function open_connection() {
     $servername = "localhost";
     $username = "thomas_webshop_user";
