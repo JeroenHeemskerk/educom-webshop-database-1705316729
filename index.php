@@ -52,13 +52,15 @@
                 }
                 break;
             case 'detail':
-                $valsAndErrs['productId'] = getUrlVar('productId');
+                $valsAndErrs['product'] = getProducts([getUrlVar('productId')])[0];
                 break;
             case 'webshop':
                 handleCartActions();
+                $valsAndErrs['products'] = getProductList();
                 break;
             case 'cart':
                 handleCartActions();
+                $valsAndErrs['cartItems'] = getCartItems();
                 break;
         }
         
@@ -201,7 +203,7 @@
                 break;
             case 'webshop':
                 require_once('webshop.php');
-                showWebshopContent();
+                showWebshopContent($valsAndErrs);
                 break;
             case 'detail':
                 require_once('detail.php');
@@ -209,7 +211,7 @@
                 break;
             case 'cart':
                 require_once('cart.php');
-                showCartContent();
+                showCartContent($valsAndErrs);
                 break;
             default:
                 //require('404.php');

@@ -5,9 +5,8 @@
         return $header;
     }
 
-    function showCartContent() {
-        require_once('session_manager.php');
-        $cartItems = getCartItems();
+    function showCartContent($data) {
+        $cartItems = $data['cartItems'];
 
         $productIds = array_keys($cartItems);
         if (empty($productIds)) {

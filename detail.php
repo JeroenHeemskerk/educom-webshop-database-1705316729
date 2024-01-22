@@ -7,7 +7,7 @@
 
     function showDetailContent($data) {
         require_once('user_service.php');
-        $product = getProducts([$data['productId']])[0];
+        $product = $data['product'];
 
         echo "<h3>".$product['name']."</h3>" . PHP_EOL;
         echo "<h4>Price: $".$product['price']."</h4>" . PHP_EOL;

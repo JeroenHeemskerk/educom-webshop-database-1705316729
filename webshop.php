@@ -5,9 +5,8 @@
         return $header;
     }
 
-    function showWebshopContent() {
-        require_once('user_service.php');
-        $products = getProductList();
+    function showWebshopContent($data) {
+        $products = $data['products'];
         
         echo '<table>' . PHP_EOL;
         echo '<tr>' . PHP_EOL;
