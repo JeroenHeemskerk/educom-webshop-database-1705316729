@@ -25,7 +25,6 @@
         showFormEnd('Login');
     }
 
-
     function validateLogin() {
         $email = $pass = $name = $userId = '';
         $emailErr = $passErr = '';
@@ -35,19 +34,24 @@
             //check email
             $email = testInput(getPostVar("email"));
             $emailErr = validateEmail($email);
-            if (!doesEmailExist($email)) {
-                $emailErr = "Dit email adres heeft geen account";
+            if (empty($emailErr)) {
+                $pass = testInput(getPostVar("pass"));
+                $userData = authorizeUser($email, $pass);
+                switch($userData['result']) {
+                    case RESULT_UNKNOWN_USER:
+                        $emailErr = "Dit email adres heeft geen account";
+                        break;
+                    case RESULT_INCORRECT_PASSWORD:
+                        $passErr = "Ongeldig wachtwoord";
+                        break;
+                    case RESULT_OK:
+                        $name = $userData['user']['name'];
+                        $userId = $userData['user']['id'];
+                        break;
+                }
             }
             
-            $pass = testInput(getPostVar("pass"));
-            $user = authorizeUser($email, $pass);
-            $name = $user['name'];
-            $userId = $user['id'];
-            if (empty($pass)) {
-                $passErr = "Vul een wachtwoord in";
-            } elseif (empty($emailErr) && $name == NULL) {
-                $passErr = "Ongeldig wachtwoord";
-            }
+            
             
             //update valid boolean after all error checking
             $valid = empty($nameErr) && empty($emailErr) && empty($passErr) && empty($passConfirmErr);
