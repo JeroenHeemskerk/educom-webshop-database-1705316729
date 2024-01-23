@@ -5,7 +5,11 @@
     }
     
     function showLoginContent($valsAndErrs) {
-        displayLoginForm($valsAndErrs);
+        if (!empty($valsAndErrs['connectionErr'])) {
+            echo "<p>".$valsAndErrs['connectionErr']."</p>".PHP_EOL;
+        } else {
+            displayLoginForm($valsAndErrs);
+        }
     }
     
     function displayLoginForm($valsAndErrs) {
@@ -27,7 +31,7 @@
 
     function validateLogin() {
         $email = $pass = $name = $userId = '';
-        $emailErr = $passErr = '';
+        $emailErr = $passErr = $connectionErr = '';
         $valid = false;
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -36,19 +40,27 @@
             $emailErr = validateEmail($email);
             if (empty($emailErr)) {
                 $pass = testInput(getPostVar("pass"));
-                $userData = authorizeUser($email, $pass);
-                switch($userData['result']) {
-                    case RESULT_UNKNOWN_USER:
-                        $emailErr = "Dit email adres heeft geen account";
-                        break;
-                    case RESULT_INCORRECT_PASSWORD:
-                        $passErr = "Ongeldig wachtwoord";
-                        break;
-                    case RESULT_OK:
-                        $name = $userData['user']['name'];
-                        $userId = $userData['user']['id'];
-                        break;
+                try {
+                    $userData = authorizeUser($email, $pass);
+                    switch($userData['result']) {
+                        case RESULT_UNKNOWN_USER:
+                            $emailErr = "Dit email adres heeft geen account";
+                            break;
+                        case RESULT_INCORRECT_PASSWORD:
+                            $passErr = "Ongeldig wachtwoord";
+                            break;
+                        case RESULT_OK:
+                            $name = $userData['user']['name'];
+                            $userId = $userData['user']['id'];
+                            break;
+                    }
                 }
+                catch (Exception $ex) {
+                    $connectionErr = "Er is een technische storing opgetreden, inloggen is niet mogelijk. Probeer het later opnieuw.";
+
+                    LogError("Authentication Failed: ".$ex->getMessage());
+                }
+                
             }
             
             
@@ -57,7 +69,7 @@
             $valid = empty($nameErr) && empty($emailErr) && empty($passErr) && empty($passConfirmErr);
         }
         $valsAndErrs = array('valid'=>$valid, 'email'=>$email, 'pass'=>$pass, 'name'=>$name, 'userId'=>$userId,
-                             'emailErr'=>$emailErr, 'passErr'=>$passErr);
+                             'emailErr'=>$emailErr, 'passErr'=>$passErr, 'connectionErr'=>$connectionErr);
         return $valsAndErrs;
     }
 ?>

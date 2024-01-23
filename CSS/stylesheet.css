@@ -131,3 +131,8 @@ form {
 .form_submit {
 	min-width: 21px;
 }
+
+.product-table {
+	margin-left: auto;
+	margin-right: auto;
+}

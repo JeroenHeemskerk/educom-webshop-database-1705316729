@@ -33,7 +33,7 @@
             case 'login':
                 require_once('login.php');
                 $valsAndErrs = validateLogin();
-                if ($valsAndErrs['valid']) {
+                if ($valsAndErrs['valid'] && !empty($valsAndErrs['connectionErr'])) {
                     loginUser($valsAndErrs['name'], $valsAndErrs['userId']);
                     $page = 'home';
                 }
@@ -44,28 +44,63 @@
                 break;
             case 'register':
                 require_once('register.php');
-                $valsAndErrs = validateRegistration();
-                if ($valsAndErrs['valid']) {
-                    addUser($valsAndErrs);
-                    $valsAndErrs['pass'] = ''; //remove pass, else it will be pre-filled
-                    $page = 'login';
+                try {
+                    $valsAndErrs = validateRegistration();
+                    if ($valsAndErrs['valid']) {
+                        addUser($valsAndErrs);
+                        $valsAndErrs['pass'] = ''; //remove pass, else it will be pre-filled
+                        $page = 'login';
+                    }
+                }
+                catch (Exception $ex) {
+                    $valsAndErrs['connectionErr'] = "Er is een technische storing opgetreden, registratie is niet mogelijk. Probeer het later opnieuw.";
+
+                    LogError("Authentication Failed: ".$ex->getMessage());
                 }
                 break;
             case 'detail':
-                handleCartActions();
-                $valsAndErrs['product'] = getProducts([getUrlVar('productId')])[0];
+                try {
+                    handleCartActions();
+                    $valsAndErrs['product'] = getProducts([getUrlVar('productId')])[0];
+                }
+                catch (Exception $ex) {
+                    $valsAndErrs['connectionErr'] = "Er is een technische storing opgetreden, er kon geen verbinding gemaakt worden met de database. Probeer het later opnieuw.";
+
+                    LogError("Authentication Failed: ".$ex->getMessage());
+                }
                 break;
             case 'webshop':
-                handleCartActions();
-                $valsAndErrs['products'] = getProductList();
+                try {
+                    handleCartActions();
+                    $valsAndErrs['products'] = getProductList();
+                }
+                catch (Exception $ex) {
+                    $valsAndErrs['connectionErr'] = "Er is een technische storing opgetreden, er kon geen verbinding gemaakt worden met de database. Probeer het later opnieuw.";
+
+                    LogError("Authentication Failed: ".$ex->getMessage());
+                }
                 break;
             case 'cart':
-                handleCartActions();
-                $valsAndErrs['cartItems'] = getCartItems();
+                try {
+                    handleCartActions();
+                    $valsAndErrs['cartItems'] = getCartItems();
+                }
+                catch (Exception $ex) {
+                    $valsAndErrs['connectionErr'] = "Er is een technische storing opgetreden, er kon geen verbinding gemaakt worden met de database. Probeer het later opnieuw.";
+
+                    LogError("Authentication Failed: ".$ex->getMessage());
+                }
                 break;
             case 'topfive':
-                handleCartActions();
-                $valsAndErrs['products'] = getTopFiveProducts();
+                try {
+                    handleCartActions();
+                    $valsAndErrs['products'] = getTopFiveProducts();
+                }
+                catch (Exception $ex) {
+                    $valsAndErrs['connectionErr'] = "Er is een technische storing opgetreden, er kon geen verbinding gemaakt worden met de database. Probeer het later opnieuw.";
+
+                    LogError("Authentication Failed: ".$ex->getMessage());
+                }
                 break;
         }
         
@@ -314,6 +349,33 @@
     function showHiddenField($name, $value) {
         echo '    <input type="hidden" name="'.$name.'" value='.$value.'>'.PHP_EOL;
     }
+
+    function showProductList($products) {
+        echo '<table class="product-table">' . PHP_EOL;
+        echo '<tr>' . PHP_EOL;
+        echo '    <th>ID</th>' . PHP_EOL;
+        echo '    <th>Name</th>' . PHP_EOL;
+        if (isUserLoggedIn()) {
+            echo '    <th></th>' . PHP_EOL; //column for buttons to add items to cart
+        }
+        echo '    <th>Price</th>' . PHP_EOL;
+        echo '    <th>Image</th>' . PHP_EOL;
+        echo '</tr>' . PHP_EOL;
+        foreach ($products as $product) {
+            echo '<tr>' . PHP_EOL;
+            echo "    <td>".$product['id']."</td>" . PHP_EOL;
+            echo "    <td><a class='webshop_link' href='index.php?page=detail&productId=".$product['id']."'>".$product['name']."</a></td>" . PHP_EOL;
+            if (isUserLoggedIn()) {
+                echo '    <td>';
+                showAddToCartForm('webshop', $product['id']);
+                echo '    </td>' . PHP_EOL;
+            }
+            echo "    <td>$".$product['price']."</td>" . PHP_EOL;
+            echo "    <td><img class='webshop_img' src='Images/".$product['img_filename']."'></td>" . PHP_EOL;
+            echo '</tr>' . PHP_EOL;
+        }
+        echo '</table>'. PHP_EOL;
+    }
     
     //function to display a text input as well as its label and error message
     function showFormField($id, $label, $type, $valsAndErrs, $options=NULL, $placeholder=NULL) {
@@ -388,5 +450,10 @@
     function showFormEnd($value) {
         echo '<input class="form_submit" type="submit" value="'.$value.'">
     </form>' . PHP_EOL;
+    }
+
+    //function to simulate logging error messages
+    function LogError($msg) {
+        echo "Logging to server: $msg";
     }
 ?>

@@ -5,7 +5,11 @@
     }
 
     function showRegisterContent($valsAndErrs) {
-        displayRegistrationForm($valsAndErrs);
+        if (isset($valsAndErrs['connectionErr'])) {
+            echo "<p>".$valsAndErrs['connectionErr']."</p>".PHP_EOL;
+        } else {
+            displayRegistrationForm($valsAndErrs);
+        }
     }
 
     function displayRegistrationForm($valsAndErrs) {
